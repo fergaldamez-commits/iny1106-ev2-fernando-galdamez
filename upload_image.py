@@ -1,4 +1,4 @@
-﻿import json
+import json
 import os
 import uuid
 import base64
@@ -20,9 +20,19 @@ def lambda_handler(event, context):
         if is_b64:
             image_data = base64.b64decode(body)
         elif isinstance(body, str):
-            image_data = body.encode('utf-8')
+            image_data = body.encode('latin-1')
         else:
             image_data = body
+
+        # Si el cliente (ej. Postman) envió la imagen como multipart/form-data,
+        # extraemos automáticamente los bytes reales del JPEG (desde \xff\xd8 hasta \xff\xd9)
+        jpeg_start = image_data.find(b'\xff\xd8\xff')
+        if jpeg_start > 0:
+            jpeg_end = image_data.rfind(b'\xff\xd9')
+            if jpeg_end != -1:
+                image_data = image_data[jpeg_start:jpeg_end + 2]
+            else:
+                image_data = image_data[jpeg_start:]
 
         image_id = str(uuid.uuid4())
         s3_key = f"images/{image_id}.jpg"
