@@ -1,4 +1,4 @@
-﻿# Evaluación Parcial N°2 — Infraestructura Serverless (INY1106)
+# Evaluación Parcial N°2 — Infraestructura Serverless (INY1106)
 
 **Asignatura:** Infraestructura de Aplicaciones II (`INY1106`)  
 **Estudiante:** Fernando Galdámez (`fer.galdamez@duocuc.cl`)  
@@ -115,6 +115,11 @@ Respuesta obtenida (`HTTP 200 OK`):
 }
 ```
 
+- **Evidencia de prueba en Postman (`POST /upload`):**
+  - Petición `POST` enviada al endpoint `https://9xl860sgs4.execute-api.us-east-1.amazonaws.com/prod/upload` adjuntando una imagen en el cuerpo de la solicitud. El servicio responde con estado **`200 OK`** (en `2.06 s`), confirmando el almacenamiento del archivo en el bucket S3 (`images/bccb4a82-29bf-44a2-ac29-52bf903fd93e.jpg`, `89420` bytes) y la generación de su registro en DynamoDB.
+
+  ![Prueba POST /upload en Postman](./Fase4_03_Postman_Upload_POST.png)
+
 #### 2. Prueba de obtención de metadatos (`GET /metadata/{image_id}`)
 Comando ejecutado:
 ```bash
@@ -130,6 +135,11 @@ Respuesta obtenida (`HTTP 200 OK`):
   "upload_date": "2026-11-01T21:34:53.570136+00:00"
 }
 ```
+
+- **Evidencia de prueba en Postman (`GET /metadata/{image_id}`):**
+  - Petición `GET` al endpoint `https://9xl860sgs4.execute-api.us-east-1.amazonaws.com/prod/metadata/a26f5583-b891-4666-bc67-81cebac0319c`. La API retorna estado **`200 OK`** (en `438 ms`) con el objeto JSON almacenado en la tabla `ImageMetadata` de DynamoDB (`image_id`, `bucket_name`, `s3_key`, `size_bytes` y `upload_date`).
+
+  ![Prueba GET /metadata en Postman](./Fase4_04_Postman_Get_Metadata.png)
 
 #### 3. Verificación en Consola de S3 y DynamoDB:
 - **Carpeta `images/` generada en el bucket S3:**
@@ -153,7 +163,12 @@ Ambas funciones registran sus eventos de invocación en CloudWatch Logs bajo `/a
 
 ![CloudWatch Log Groups](./Fase5_01_CloudWatch_LogGroups.png)
 
-#### 2. Métricas de Ejecución Extraídas de CloudWatch Logs
+#### 2. Eventos de Registro y Métricas de Ejecución en CloudWatch Logs
+- **Detalle de Eventos de Registro (`INIT_START`, `START`, `END` y `REPORT`):**
+  - Captura del flujo de eventos en Amazon CloudWatch Logs donde se aprecia la inicialización del entorno de ejecución (`python:3.11`), una primera invocación (*Cold Start*) con `Duration: 485.36 ms` (`Billed Duration: 1037 ms`, `Max Memory Used: 94 MB` de `128 MB`) y una segunda invocación consecutiva (*Warm Start*) que reutiliza el contenedor y reduce el tiempo de ejecución a **`11.27 ms`** (`Billed Duration: 12 ms`).
+
+![Eventos de Registro en CloudWatch](./Fase5_02_CloudWatch_LogEvents.png)
+
 ```text
 # /aws/lambda/upload_image
 REPORT RequestId: 32fcf9f8-4749-4e84-8e10-382c88b83780
