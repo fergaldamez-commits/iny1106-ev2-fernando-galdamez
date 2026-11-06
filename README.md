@@ -141,7 +141,12 @@ Respuesta obtenida (`HTTP 200 OK`):
 
   ![Prueba GET /metadata en Postman](./Fase4_04_Postman_Get_Metadata.png)
 
-#### 3. Verificación en Consola de S3 y DynamoDB:
+- **Evidencia de ejecución por terminal en AWS CloudShell (`curl -X GET`):**
+  - Invocación directa desde la consola **AWS CloudShell** consultando el endpoint de metadatos y obteniendo la respuesta JSON en línea desde DynamoDB.
+
+  ![Prueba GET /metadata en AWS CloudShell](./Fase4_05_CloudShell_GET_Metadata.png)
+
+#### 3. Verificación en Consola de S3, Visualización de Imagen y DynamoDB:
 - **Carpeta `images/` generada en el bucket S3:**
 
   ![S3 Carpeta images](./Fase4_01_S3_Uploaded_Objects.png)
@@ -149,6 +154,11 @@ Respuesta obtenida (`HTTP 200 OK`):
 - **Objeto `a26f5583-b891-4666-bc67-81cebac0319c.jpg` almacenado en S3:**
 
   ![S3 Archivo JPG](./Fase4_01_S3_File_In_Folder.png)
+
+- **Visualización de la imagen JPEG cargada y servida desde el bucket Amazon S3 (`images/bccb4a82-29bf-44a2-ac29-52bf903fd93e.jpg`):**
+  - Imagen verificada y renderizada correctamente desde el bucket `my-image-storage-bucket-20f07620` con tipo de contenido `image/jpeg`:
+
+  ![Imagen Visualizada desde S3](./Fase4_06_Imagen_Visualizada_S3.jpg)
 
 - **Ítem persistido en la tabla `ImageMetadata` de DynamoDB:**
 
